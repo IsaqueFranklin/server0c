@@ -9,8 +9,10 @@
 // The stdio lib is not imported in the 
 #include <stdio.h>
 #include <stdlib.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
 
-struct Server server_constructor(int domain, int service, int protocol, u_long interface, int backlog, void (*launch)(void)) {
+struct Server server_constructor(int domain, int service, int protocol, u_long interface, int port, int backlog, void (*launch)(struct Server *server)) {
 
   struct Server server;
 
@@ -24,7 +26,7 @@ struct Server server_constructor(int domain, int service, int protocol, u_long i
   server.address.sin_family = domain;
   // The htons (h to networks) function converts our int port into bytes that will refer to our network port. 
   server.address.sin_port = htons(port);
-  server.address.sin_addr.sin_addr = htonl(interface);
+  server.address.sin_addr.s_addr = htonl(interface);
 
   // A socket is what allows our operating system to comunicate with the network => It does it in a particular domina, using a particular type of service and a protocol.
   server.socket = socket(domain, service, protocol);
